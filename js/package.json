@@ -25,12 +25,20 @@
     "playwright",
     "puppeteer",
     "scraping",
+    "web-scraping",
     "anti-detect",
+    "antidetect",
+    "undetected",
     "bot-detection",
     "fingerprint",
     "recaptcha",
     "cloudflare",
-    "datadome"
+    "turnstile",
+    "datadome",
+    "captcha",
+    "headless",
+    "automation",
+    "ai-agent"
   ],
   "license": "MIT",
   "repository": {

@@ -6,9 +6,9 @@ Changes are tagged: **[wrapper]** for Python/JS wrapper, **[binary]** for Chromi
 
 ---
 
-## [0.3.0] — Unreleased
+## [0.3.0] — 2026-03-02
 
-Chromium v145 upgrade. 25 fingerprint patches (up from 16). New download verification and fallback system. Pending: macOS v145 binary builds.
+Chromium v145 upgrade. 25 fingerprint patches (up from 16). New download verification and fallback system. macOS v145 binary builds pending.
 
 ### Breaking
 
