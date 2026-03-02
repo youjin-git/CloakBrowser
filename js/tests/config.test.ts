@@ -69,9 +69,9 @@ describe("config", () => {
 });
 
 describe("buildArgs timezone/locale", () => {
-  it("injects --timezone when timezone is set", () => {
+  it("injects --fingerprint-timezone when timezone is set", () => {
     const args = _buildArgsForTest({ timezone: "America/New_York" });
-    expect(args).toContain("--timezone=America/New_York");
+    expect(args).toContain("--fingerprint-timezone=America/New_York");
   });
 
   it("injects --lang when locale is set", () => {
@@ -81,20 +81,20 @@ describe("buildArgs timezone/locale", () => {
 
   it("injects both when both are set", () => {
     const args = _buildArgsForTest({ timezone: "Europe/Berlin", locale: "de-DE" });
-    expect(args).toContain("--timezone=Europe/Berlin");
+    expect(args).toContain("--fingerprint-timezone=Europe/Berlin");
     expect(args).toContain("--lang=de-DE");
   });
 
   it("injects timezone/locale even when stealthArgs=false", () => {
     const args = _buildArgsForTest({ stealthArgs: false, timezone: "America/New_York", locale: "en-US" });
-    expect(args).toContain("--timezone=America/New_York");
+    expect(args).toContain("--fingerprint-timezone=America/New_York");
     expect(args).toContain("--lang=en-US");
     expect(args.some(a => a.startsWith("--fingerprint="))).toBe(false);
   });
 
   it("does not inject flags when not set", () => {
     const args = _buildArgsForTest({});
-    expect(args.some(a => a.startsWith("--timezone="))).toBe(false);
+    expect(args.some(a => a.startsWith("--fingerprint-timezone="))).toBe(false);
     expect(args.some(a => a.startsWith("--lang="))).toBe(false);
   });
 });

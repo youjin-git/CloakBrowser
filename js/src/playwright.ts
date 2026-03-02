@@ -121,7 +121,7 @@ function buildArgs(options: LaunchOptions): string[] {
   }
   // Timezone/locale flags — always inject when set
   if (options.timezone) {
-    args.push(`--timezone=${options.timezone}`);
+    args.push(`--fingerprint-timezone=${options.timezone}`);
   }
   if (options.locale) {
     args.push(`--lang=${options.locale}`);

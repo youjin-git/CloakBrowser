@@ -11,7 +11,7 @@ export interface LaunchOptions {
   args?: string[];
   /** Include default stealth fingerprint args (default: true). Set false to use custom --fingerprint flags. */
   stealthArgs?: boolean;
-  /** IANA timezone, e.g. "America/New_York". Sets --timezone binary flag. */
+  /** IANA timezone, e.g. "America/New_York". Sets --fingerprint-timezone binary flag. */
   timezone?: string;
   /** BCP 47 locale, e.g. "en-US". Sets --lang binary flag. */
   locale?: string;

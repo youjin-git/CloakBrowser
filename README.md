@@ -35,8 +35,8 @@ Drop-in Playwright/Puppeteer replacement for Python and JavaScript.<br>
 Same API, same code — just swap the import. <strong>3 lines of code, 30 seconds to unblock.</strong>
 </p>
 
-- 🔒 **26 source-level C++ patches** — not JS injection, not config flags
-- 🛡️ **CDP stealth built-in** — powered by [Patchright](https://github.com/Kaliiiiiiiiii-Vinyzu/patchright), hides Playwright's automation signals
+- 🔒 **25 source-level C++ patches** — not JS injection, not config flags
+- 🛡️ **CDP stealth built-in** — uses [Patchright](https://github.com/Kaliiiiiiiiii-Vinyzu/patchright) to reduce Playwright's automation footprint
 - 🎯 **0.9 reCAPTCHA v3 score** — human-level, server-verified
 - ☁️ **Passes Cloudflare Turnstile**, FingerprintJS, BrowserScan — 30/30 tests
 - 🔄 **Drop-in replacement** — works with Playwright (Python & JS) and Puppeteer (JS)
@@ -102,14 +102,15 @@ page.goto("https://example.com")
 # ... rest of your code works unchanged
 ```
 
-> ⭐ **Like what you see?** [Star this repo](https://github.com/CloakHQ/CloakBrowser) to get notified when new builds drop.
+> ⭐ **Star** to show support — **[Watch releases](https://github.com/CloakHQ/CloakBrowser/subscription)** to get notified when new builds drop.
 
 ## What's New in v0.3.0
 
-- **Chromium 145** — latest stable, 26 fingerprint patches (up from 16)
-- **10 new patches** — screen dimensions, device memory, audio, WebGL, and more
+- **Chromium 145** (Linux) — latest stable, 25 fingerprint patches (up from 16). macOS v145 coming soon
+- **9 new patches** — screen dimensions, device memory, audio, WebGL, and more
 - **SHA-256 checksum verification** — binary downloads are verified for integrity
 - **CDP hardening** — audited and patched known automation detection vectors
+- **Full stealth audit** — every patch reviewed for detection vectors, multiple fixes shipped
 - **Timezone & locale from proxy IP** — `launch(proxy="...", geoip=True)` auto-detects timezone and locale
 
 See the full [CHANGELOG.md](CHANGELOG.md) for details.
@@ -118,7 +119,7 @@ See the full [CHANGELOG.md](CHANGELOG.md) for details.
 
 - **Config-level patches break** — `playwright-stealth`, `undetected-chromedriver`, and `puppeteer-extra` inject JavaScript or tweak flags. Every Chrome update breaks them. Antibot systems detect the patches themselves.
 - **CloakBrowser patches Chromium source code** — fingerprints are modified at the C++ level, compiled into the binary. Detection sites see a real browser because it *is* a real browser.
-- **Two layers of stealth** — C++ patches handle fingerprints (GPU, screen, UA, hardware reporting), while the Patchright driver eliminates CDP automation leaks. Most stealth tools only do one or the other.
+- **Two layers of stealth** — C++ patches handle fingerprints (GPU, screen, UA, hardware reporting), while the Patchright driver defers Playwright's binding registration and randomizes internal world names. Most stealth tools only do one or the other.
 - **Same behavior everywhere** — works identically local, in Docker, and on VPS. No environment-specific patches or config needed.
 - **Works with AI browser agents** — drop-in stealth binary for [browser-use](https://github.com/browser-use/browser-use), [agent-browser](https://github.com/nichochar/agent-browser), Claude computer use, and OpenAI Operator
 - **One line to switch** — same Playwright API, no new abstractions, no CAPTCHA-solving services.
@@ -174,11 +175,11 @@ All tests verified against live detection services. Last tested: Mar 2026 (Chrom
 CloakBrowser is a thin wrapper (Python + JavaScript) around a custom-built Chromium binary:
 
 1. **You install** → `pip install cloakbrowser` or `npm install cloakbrowser`
-2. **First launch** → binary auto-downloads for your platform (Linux x64, macOS arm64/x64)
+2. **First launch** → binary auto-downloads for your platform (Linux x64: Chromium 145, macOS: Chromium 142)
 3. **Every launch** → Playwright or Puppeteer starts with our binary + stealth args
 4. **You write code** → standard Playwright/Puppeteer API, nothing new to learn
 
-The binary includes 26 source-level patches covering canvas, WebGL, audio, fonts, GPU, screen properties, hardware reporting, and automation signal removal.
+The binary includes 25 source-level patches covering canvas, WebGL, audio, fonts, GPU, screen properties, hardware reporting, and automation signal removal.
 
 These are compiled into the Chromium binary — not injected via JavaScript, not set via flags.
 
@@ -365,10 +366,9 @@ Every `launch()` call sets these automatically. Defaults are **platform-aware** 
 | `--fingerprint-device-memory` | `8` | *(not set)* | `navigator.deviceMemory` |
 | `--fingerprint-screen-width` | `1920` | *(not set)* | Screen width reporting |
 | `--fingerprint-screen-height` | `1080` | *(not set)* | Screen height reporting |
-| `--fingerprint-taskbar-height` | `40` | *(not set)* | Windows taskbar height |
 | `--window-size` | `1920,1080` | *(not set)* | Browser window dimensions |
 
-> **Important:** `--fingerprint-platform` must always be set. The binary defaults to `windows` internally when this flag is missing, which causes GPU/UA mismatches on non-Windows systems. The wrapper handles this automatically.
+> **Important:** `--fingerprint-platform` should always be set. Without it, platform-specific patches (GPU, UA, screen, taskbar) won't activate. The wrapper handles this automatically.
 
 ### Additional Flags
 
@@ -380,7 +380,10 @@ Supported by the binary but **not set by default** — pass via `args` to custom
 | `--fingerprint-brand-version` | Brand version (UA + Client Hints) |
 | `--fingerprint-platform-version` | Client Hints platform version |
 | `--fingerprint-location` | Geolocation coordinates |
-| `--timezone` | Timezone (e.g. `America/New_York`) |
+| `--fingerprint-timezone` | Timezone (e.g. `America/New_York`) |
+| `--fingerprint-taskbar-height` | Override taskbar height (binary defaults: Win=48, Mac=95, Linux=0) |
+| `--fingerprint-fonts-dir` | Path to cross-platform font directory |
+| `--enable-blink-features=FakeShadowRoot` | Access closed shadow DOM elements |
 
 > **Note:** All stealth tests were verified with the default fingerprint config above. Changing these flags may affect detection results — test your configuration before using in production.
 
@@ -420,14 +423,14 @@ browser = launch(args=[
 
 ## Platforms
 
-| Platform | Status |
-|---|---|
-| Linux x86_64 | ✅ Available |
-| macOS arm64 (Apple Silicon) | ✅ Available |
-| macOS x86_64 (Intel) | ✅ Available |
-| Windows | Planned |
+| Platform | Chromium | Patches | Status |
+|---|---|---|---|
+| Linux x86_64 | 145 | 25 | ✅ Latest |
+| macOS arm64 (Apple Silicon) | 142 | 16 | ✅ Available (v145 coming soon) |
+| macOS x86_64 (Intel) | 142 | 16 | ✅ Available (v145 coming soon) |
+| Windows | — | — | Planned |
 
-**macOS (early access):** macOS builds are new — tested but not yet battle-tested at scale like Linux. If you hit any issues, [please open a GitHub issue](https://github.com/CloakHQ/CloakBrowser/issues).
+The wrapper auto-downloads the correct binary for your platform. Linux gets Chromium 145 with all 25 patches. macOS currently runs Chromium 142 (16 patches) — the v145 macOS build is in progress.
 
 **macOS first launch:** The binary is ad-hoc signed. On first run, macOS Gatekeeper will block it. Right-click the app → **Open** → click **Open** in the dialog. This is only needed once.
 
@@ -450,10 +453,9 @@ browser = launch(args=[
 
 | Feature | Status |
 |---------|--------|
-| Linux x64 binary | ✅ Released |
-| macOS arm64 (Apple Silicon) | ✅ Released |
-| macOS x64 (Intel) | ✅ Released |
-| Chromium 145 build (26 patches) | ✅ Released |
+| Linux x64 — Chromium 145 (25 patches) | ✅ Released |
+| macOS arm64/x64 — Chromium 142 (16 patches) | ✅ Released |
+| macOS arm64/x64 — Chromium 145 | 🔨 In progress |
 | JavaScript/Puppeteer + Playwright support | ✅ Released |
 | Fingerprint rotation per session | ✅ Released |
 | Built-in proxy rotation | 📋 Planned |

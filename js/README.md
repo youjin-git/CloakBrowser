@@ -11,7 +11,7 @@
 
 Drop-in Playwright/Puppeteer replacement. Same API — just swap the import. Scores **0.9 on reCAPTCHA v3**, passes **Cloudflare Turnstile**, and clears **30/30** stealth detection tests.
 
-- 🔒 **26 source-level C++ patches** — not JS injection, not config flags
+- 🔒 **25 source-level C++ patches** — not JS injection, not config flags
 - 🎯 **0.9 reCAPTCHA v3 score** — human-level, server-verified
 - ☁️ **Passes Cloudflare Turnstile**, FingerprintJS, BrowserScan — 30/30 tests
 - 🔄 **Drop-in replacement** — works with both Playwright and Puppeteer
@@ -75,7 +75,7 @@ const browser = await launch({
   args: ['--window-size=1920,1080'],
 });
 
-// With timezone and locale (sets --timezone and --lang binary flags)
+// With timezone and locale (sets --fingerprint-timezone and --lang binary flags)
 const browser = await launch({
   timezone: 'America/New_York',
   locale: 'en-US',
@@ -155,6 +155,7 @@ if (newVersion) console.log(`Updated to ${newVersion}`);
 | `CLOAKBROWSER_CACHE_DIR` | `~/.cloakbrowser` | Binary cache directory |
 | `CLOAKBROWSER_DOWNLOAD_URL` | `cloakbrowser.dev` | Custom download URL |
 | `CLOAKBROWSER_AUTO_UPDATE` | `true` | Set to `false` to disable background update checks |
+| `CLOAKBROWSER_SKIP_CHECKSUM` | `false` | Set to `true` to skip SHA-256 verification after download |
 
 ## Migrate From Playwright
 

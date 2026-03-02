@@ -191,7 +191,7 @@ def main():
         args=[
             "--fingerprint-screen-width=1920",
             "--fingerprint-screen-height=1080",
-            "--timezone=Asia/Jerusalem",
+            "--fingerprint-timezone=Asia/Jerusalem",
         ],
     )
     page = context.new_page()

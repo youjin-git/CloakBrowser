@@ -42,7 +42,7 @@ def launch(
         args: Additional Chromium CLI arguments to pass.
         stealth_args: Include default stealth fingerprint args (default True).
             Set to False if you want to pass your own --fingerprint flags.
-        timezone: IANA timezone (e.g. 'America/New_York'). Sets --timezone binary flag.
+        timezone: IANA timezone (e.g. 'America/New_York'). Sets --fingerprint-timezone binary flag.
         locale: BCP 47 locale (e.g. 'en-US'). Sets --lang binary flag.
         geoip: Auto-detect timezone/locale from proxy IP (default False).
             Requires ``pip install cloakbrowser[geoip]``. Downloads ~70 MB
@@ -108,7 +108,7 @@ async def launch_async(
         proxy: Proxy server URL (e.g. 'http://proxy:8080' or 'socks5://proxy:1080').
         args: Additional Chromium CLI arguments to pass.
         stealth_args: Include default stealth fingerprint args (default True).
-        timezone: IANA timezone (e.g. 'America/New_York'). Sets --timezone binary flag.
+        timezone: IANA timezone (e.g. 'America/New_York'). Sets --fingerprint-timezone binary flag.
         locale: BCP 47 locale (e.g. 'en-US'). Sets --lang binary flag.
         geoip: Auto-detect timezone/locale from proxy IP (default False).
         **kwargs: Passed directly to playwright.chromium.launch().
@@ -270,7 +270,7 @@ def _build_args(
         result.extend(extra_args)
     # Timezone/locale flags are independent of stealth_args — always inject when set
     if timezone:
-        result.append(f"--timezone={timezone}")
+        result.append(f"--fingerprint-timezone={timezone}")
     if locale:
         result.append(f"--lang={locale}")
     return result

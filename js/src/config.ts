@@ -168,9 +168,9 @@ export function getLocalBinaryOverride(): string | undefined {
 // Default stealth arguments
 // ---------------------------------------------------------------------------
 // Default viewport — realistic maximized Chrome on 1080p Windows
-// screen=1920x1080, availHeight=1040 (minus 40px taskbar),
-// innerHeight=955 (minus ~85px Chrome UI: tabs + address bar + bookmarks)
-export const DEFAULT_VIEWPORT = { width: 1920, height: 955 };
+// screen=1920x1080, availHeight=1032 (minus 48px taskbar, binary default),
+// innerHeight=947 (minus ~85px Chrome UI: tabs + address bar + bookmarks)
+export const DEFAULT_VIEWPORT = { width: 1920, height: 947 };
 
 export function getDefaultStealthArgs(): string[] {
   const seed = Math.floor(Math.random() * 90000) + 10000; // 10000-99999
@@ -195,7 +195,6 @@ export function getDefaultStealthArgs(): string[] {
     "--fingerprint-device-memory=8",
     "--fingerprint-gpu-vendor=NVIDIA Corporation",
     "--fingerprint-gpu-renderer=NVIDIA GeForce RTX 3070",
-    "--fingerprint-taskbar-height=40",
     "--fingerprint-screen-width=1920",
     "--fingerprint-screen-height=1080",
     "--window-size=1920,1080",

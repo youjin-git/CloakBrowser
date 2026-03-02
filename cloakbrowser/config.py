@@ -56,7 +56,6 @@ def get_default_stealth_args() -> list[str]:
         "--fingerprint-device-memory=8",
         "--fingerprint-gpu-vendor=NVIDIA Corporation",
         "--fingerprint-gpu-renderer=NVIDIA GeForce RTX 3070",
-        "--fingerprint-taskbar-height=40",
         "--fingerprint-screen-width=1920",
         "--fingerprint-screen-height=1080",
         "--window-size=1920,1080",
@@ -65,10 +64,10 @@ def get_default_stealth_args() -> list[str]:
 
 # ---------------------------------------------------------------------------
 # Default viewport — realistic maximized Chrome on 1080p Windows
-# screen=1920x1080, availHeight=1040 (minus 40px taskbar),
-# innerHeight=955 (minus ~85px Chrome UI: tabs + address bar + bookmarks)
+# screen=1920x1080, availHeight=1032 (minus 48px taskbar, binary default),
+# innerHeight=947 (minus ~85px Chrome UI: tabs + address bar + bookmarks)
 # ---------------------------------------------------------------------------
-DEFAULT_VIEWPORT = {"width": 1920, "height": 955}
+DEFAULT_VIEWPORT = {"width": 1920, "height": 947}
 
 # ---------------------------------------------------------------------------
 # Platform detection
