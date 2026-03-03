@@ -176,9 +176,7 @@ const page = await browser.newPage();
 | Linux x86_64 | ✅ Available |
 | macOS arm64 (Apple Silicon) | ✅ Available |
 | macOS x86_64 (Intel) | ✅ Available |
-| Windows | Planned |
-
-**On Windows?** You can still use CloakBrowser via Docker or with your own Chromium binary by setting `CLOAKBROWSER_BINARY_PATH=/path/to/chrome`.
+| Windows x86_64 | ✅ Available |
 
 ## Requirements
 

@@ -100,7 +100,7 @@ describe("latest version (platform-aware)", () => {
       {
         tag_name: "chromium-v145.0.7718.0",
         draft: false,
-        assets: makeAssets(["linux-x64", "darwin-arm64", "darwin-x64"]),
+        assets: makeAssets(["linux-x64", "darwin-arm64", "darwin-x64", "windows-x64"]),
       },
     ]);
     expect(await getLatestChromiumVersion()).toBe("145.0.7718.0");
@@ -116,7 +116,7 @@ describe("latest version (platform-aware)", () => {
       {
         tag_name: "chromium-v142.0.7444.175",
         draft: false,
-        assets: makeAssets(["linux-x64", "darwin-arm64", "darwin-x64"]),
+        assets: makeAssets(["linux-x64", "darwin-arm64", "darwin-x64", "windows-x64"]),
       },
     ]);
     const result = await getLatestChromiumVersion();
@@ -133,14 +133,14 @@ describe("latest version (platform-aware)", () => {
       {
         tag_name: "chromium-v145.0.7718.0",
         draft: false,
-        assets: [{ name: "cloakbrowser-windows-x64.tar.gz" }],
+        assets: [{ name: "cloakbrowser-freebsd-x64.tar.gz" }],
       },
     ]);
     expect(await getLatestChromiumVersion()).toBeNull();
   });
 
   it("skips draft releases", async () => {
-    const all = ["linux-x64", "darwin-arm64", "darwin-x64"];
+    const all = ["linux-x64", "darwin-arm64", "darwin-x64", "windows-x64"];
     mockFetch([
       { tag_name: "chromium-v999.0.0.0", draft: true, assets: makeAssets(all) },
       { tag_name: "chromium-v145.0.7718.0", draft: false, assets: makeAssets(all) },

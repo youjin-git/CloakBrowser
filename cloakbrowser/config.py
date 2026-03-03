@@ -11,8 +11,7 @@ from ._version import __version__
 
 # ---------------------------------------------------------------------------
 # Chromium version shipped with this release.
-# Different platforms may ship different versions (e.g. Linux gets v145 first,
-# macOS stays on v142 until Mac builds are ready).
+# Different platforms may ship different versions during transition periods.
 # CHROMIUM_VERSION is the latest across all platforms (for display/reference).
 # Use get_chromium_version() for the current platform's actual version.
 # ---------------------------------------------------------------------------
@@ -22,6 +21,7 @@ PLATFORM_CHROMIUM_VERSIONS: dict[str, str] = {
     "linux-x64": "145.0.7632.109",
     "darwin-arm64": "145.0.7632.109",
     "darwin-x64": "145.0.7632.109",
+    "windows-x64": "145.0.7632.109",
 }
 
 # ---------------------------------------------------------------------------
@@ -51,7 +51,7 @@ def get_default_stealth_args() -> list[str]:
             "--fingerprint-gpu-renderer=ANGLE (Apple, ANGLE Metal Renderer: Apple M3, Unspecified Version)",
         ]
 
-    # Linux: spoof as Windows
+    # Linux/Windows: Windows fingerprint profile
     return base + [
         "--fingerprint-platform=windows",
         "--fingerprint-hardware-concurrency=8",
@@ -79,6 +79,8 @@ SUPPORTED_PLATFORMS: dict[tuple[str, str], str] = {
     ("Linux", "aarch64"): "linux-arm64",
     ("Darwin", "arm64"): "darwin-arm64",
     ("Darwin", "x86_64"): "darwin-x64",
+    ("Windows", "AMD64"): "windows-x64",
+    ("Windows", "x86_64"): "windows-x64",
 }
 
 # Platforms with pre-built binaries available for download (derived from version map).
@@ -132,6 +134,8 @@ def get_binary_path(version: str | None = None) -> Path:
     if platform.system() == "Darwin":
         # macOS: Chromium.app bundle
         return binary_dir / "Chromium.app" / "Contents" / "MacOS" / "Chromium"
+    elif platform.system() == "Windows":
+        return binary_dir / "chrome.exe"
     else:
         # Linux: flat binary
         return binary_dir / "chrome"
@@ -150,9 +154,8 @@ def check_platform_available() -> None:
         available = ", ".join(sorted(AVAILABLE_PLATFORMS))
         import sys
         sys.exit(
-            f"\n\033[1mCloakBrowser\033[0m — Pre-built binaries are currently only available for: {available}.\n"
-            f"Windows builds are coming soon.\n\n"
-            f"To use CloakBrowser now, run in Docker (see README) or set CLOAKBROWSER_BINARY_PATH."
+            f"\n\033[1mCloakBrowser\033[0m — Pre-built binaries are currently only available for: {available}.\n\n"
+            f"To use CloakBrowser now, set CLOAKBROWSER_BINARY_PATH to a local Chromium binary."
         )
 
 

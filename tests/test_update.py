@@ -166,7 +166,7 @@ class TestGetLatestVersion:
             {
                 "tag_name": "chromium-v145.0.7718.0",
                 "draft": False,
-                "assets": self._make_assets(["linux-x64", "darwin-arm64", "darwin-x64"]),
+                "assets": self._make_assets(["linux-x64", "darwin-arm64", "darwin-x64", "windows-x64"]),
             },
         ]
         mock_response.raise_for_status = MagicMock()
@@ -187,7 +187,7 @@ class TestGetLatestVersion:
             {
                 "tag_name": "chromium-v142.0.7444.175",
                 "draft": False,
-                "assets": self._make_assets(["linux-x64", "darwin-arm64", "darwin-x64"]),
+                "assets": self._make_assets(["linux-x64", "darwin-arm64", "darwin-x64", "windows-x64"]),
             },
         ]
         mock_response.raise_for_status = MagicMock()
@@ -202,7 +202,7 @@ class TestGetLatestVersion:
 
     def test_skips_draft_releases(self):
         mock_response = MagicMock()
-        all_platforms = ["linux-x64", "darwin-arm64", "darwin-x64"]
+        all_platforms = ["linux-x64", "darwin-arm64", "darwin-x64", "windows-x64"]
         mock_response.json.return_value = [
             {"tag_name": "chromium-v999.0.0.0", "draft": True, "assets": self._make_assets(all_platforms)},
             {"tag_name": "chromium-v145.0.7718.0", "draft": False, "assets": self._make_assets(all_platforms)},
@@ -215,7 +215,7 @@ class TestGetLatestVersion:
 
     def test_skips_non_chromium_tags(self):
         mock_response = MagicMock()
-        all_platforms = ["linux-x64", "darwin-arm64", "darwin-x64"]
+        all_platforms = ["linux-x64", "darwin-arm64", "darwin-x64", "windows-x64"]
         mock_response.json.return_value = [
             {"tag_name": "v0.2.0", "draft": False, "assets": self._make_assets(all_platforms)},
             {"tag_name": "chromium-v145.0.7718.0", "draft": False, "assets": self._make_assets(all_platforms)},
@@ -233,7 +233,7 @@ class TestGetLatestVersion:
             {
                 "tag_name": "chromium-v145.0.7718.0",
                 "draft": False,
-                "assets": [{"name": "cloakbrowser-windows-x64.tar.gz"}],
+                "assets": [{"name": "cloakbrowser-freebsd-x64.tar.gz"}],
             },
         ]
         mock_response.raise_for_status = MagicMock()

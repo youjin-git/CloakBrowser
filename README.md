@@ -106,7 +106,7 @@ page.goto("https://example.com")
 
 ## What's New in v0.3.0
 
-- **Chromium 145** (Linux) — latest stable, 25 fingerprint patches (up from 16). macOS v145 coming soon
+- **Chromium 145** — latest stable, 25 fingerprint patches (up from 16). All platforms
 - **9 new patches** — screen dimensions, device memory, audio, WebGL, and more
 - **SHA-256 checksum verification** — binary downloads are verified for integrity
 - **CDP hardening** — audited and patched known automation detection vectors
@@ -175,7 +175,7 @@ All tests verified against live detection services. Last tested: Mar 2026 (Chrom
 CloakBrowser is a thin wrapper (Python + JavaScript) around a custom-built Chromium binary:
 
 1. **You install** → `pip install cloakbrowser` or `npm install cloakbrowser`
-2. **First launch** → binary auto-downloads for your platform (Linux x64: Chromium 145, macOS: Chromium 142)
+2. **First launch** → binary auto-downloads for your platform (Chromium 145)
 3. **Every launch** → Playwright or Puppeteer starts with our binary + stealth args
 4. **You write code** → standard Playwright/Puppeteer API, nothing new to learn
 
@@ -354,9 +354,9 @@ Every launch automatically generates a **unique fingerprint**. A random seed (10
 
 ### Default Fingerprint
 
-Every `launch()` call sets these automatically. Defaults are **platform-aware** — macOS runs as a native Mac browser, Linux spoofs Windows:
+Every `launch()` call sets these automatically. Defaults are **platform-aware** — macOS runs as a native Mac browser, Linux and Windows use the Windows fingerprint profile:
 
-| Flag | Linux Default | macOS Default | Controls |
+| Flag | Linux/Windows Default | macOS Default | Controls |
 |------|--------------|---------------|----------|
 | `--fingerprint` | Random (10000–99999) | Random (10000–99999) | Master seed for canvas, WebGL, audio, fonts, client rects |
 | `--fingerprint-platform` | `windows` | `macos` | `navigator.platform`, User-Agent OS, GPU pool selection |
@@ -428,15 +428,13 @@ browser = launch(args=[
 | Platform | Chromium | Patches | Status |
 |---|---|---|---|
 | Linux x86_64 | 145 | 25 | ✅ Latest |
-| macOS arm64 (Apple Silicon) | 142 | 16 | ✅ Available (v145 coming soon) |
-| macOS x86_64 (Intel) | 142 | 16 | ✅ Available (v145 coming soon) |
-| Windows | — | — | Planned |
+| macOS arm64 (Apple Silicon) | 145 | 25 | ✅ Latest |
+| macOS x86_64 (Intel) | 145 | 25 | ✅ Latest |
+| Windows x86_64 | 145 | 25 | ✅ Latest |
 
-The wrapper auto-downloads the correct binary for your platform. Linux gets Chromium 145 with all 25 patches. macOS currently runs Chromium 142 (16 patches) — the v145 macOS build is in progress.
+The wrapper auto-downloads the correct binary for your platform.
 
 **macOS first launch:** The binary is ad-hoc signed. On first run, macOS Gatekeeper will block it. Right-click the app → **Open** → click **Open** in the dialog. This is only needed once.
-
-**On Windows?** You can still use CloakBrowser via Docker or with your own Chromium binary by setting `CLOAKBROWSER_BINARY_PATH=/path/to/chrome`.
 
 ## Examples
 
@@ -456,12 +454,11 @@ The wrapper auto-downloads the correct binary for your platform. Linux gets Chro
 | Feature | Status |
 |---------|--------|
 | Linux x64 — Chromium 145 (25 patches) | ✅ Released |
-| macOS arm64/x64 — Chromium 142 (16 patches) | ✅ Released |
-| macOS arm64/x64 — Chromium 145 | 🔨 In progress |
+| macOS arm64/x64 — Chromium 145 (25 patches) | ✅ Released |
+| Windows x64 — Chromium 145 (25 patches) | ✅ Released |
 | JavaScript/Puppeteer + Playwright support | ✅ Released |
 | Fingerprint rotation per session | ✅ Released |
 | Built-in proxy rotation | 📋 Planned |
-| Windows support | 📋 Planned |
 
 ## Docker
 

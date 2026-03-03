@@ -363,9 +363,9 @@ async function extractArchive(
   // Flatten single subdirectory if needed
   flattenSingleSubdir(destDir);
 
-  // Make binary executable
+  // Make binary executable (skip on Windows — no-op / AV lock risk)
   const bp = binaryPath || getBinaryPath();
-  if (fs.existsSync(bp)) {
+  if (process.platform !== "win32" && fs.existsSync(bp)) {
     fs.chmodSync(bp, 0o755);
   }
 

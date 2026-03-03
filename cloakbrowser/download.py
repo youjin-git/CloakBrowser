@@ -330,7 +330,9 @@ def _is_executable(path: Path) -> bool:
 
 
 def _make_executable(path: Path) -> None:
-    """Make a file executable (chmod +x)."""
+    """Make a file executable (chmod +x). Skipped on Windows (no-op / AV lock risk)."""
+    if platform.system() == "Windows":
+        return
     current = path.stat().st_mode
     path.chmod(current | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 

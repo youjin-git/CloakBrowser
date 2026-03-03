@@ -23,8 +23,7 @@ export { WRAPPER_VERSION };
 
 // ---------------------------------------------------------------------------
 // Chromium version shipped with this release.
-// Different platforms may ship different versions (e.g. Linux gets v145 first,
-// macOS stays on v142 until Mac builds are ready).
+// Different platforms may ship different versions during transition periods.
 // CHROMIUM_VERSION is the latest across all platforms (for display/reference).
 // Use getChromiumVersion() for the current platform's actual version.
 // ---------------------------------------------------------------------------
@@ -32,8 +31,9 @@ export const CHROMIUM_VERSION = "145.0.7632.109";
 
 export const PLATFORM_CHROMIUM_VERSIONS: Record<string, string> = {
   "linux-x64": "145.0.7632.109",
-  "darwin-arm64": "142.0.7444.175",
-  "darwin-x64": "142.0.7444.175",
+  "darwin-arm64": "145.0.7632.109",
+  "darwin-x64": "145.0.7632.109",
+  "windows-x64": "145.0.7632.109",
 };
 
 // ---------------------------------------------------------------------------
@@ -44,6 +44,7 @@ const SUPPORTED_PLATFORMS: Record<string, string> = {
   "linux-arm64": "linux-arm64",
   "darwin-arm64": "darwin-arm64",
   "darwin-x64": "darwin-x64",
+  "win32-x64": "windows-x64",
 };
 
 // Platforms with pre-built binaries available for download (derived from version map).
@@ -64,6 +65,7 @@ export function getPlatformTag(): string {
   else if (platform === "linux" && arch === "arm64") key = "linux-arm64";
   else if (platform === "darwin" && arch === "arm64") key = "darwin-arm64";
   else if (platform === "darwin" && arch === "x64") key = "darwin-x64";
+  else if (platform === "win32" && arch === "x64") key = "win32-x64";
   else {
     const supported = Object.values(SUPPORTED_PLATFORMS).join(", ");
     throw new Error(
@@ -92,6 +94,9 @@ export function getBinaryPath(version?: string): string {
   if (process.platform === "darwin") {
     return path.join(binaryDir, "Chromium.app", "Contents", "MacOS", "Chromium");
   }
+  if (process.platform === "win32") {
+    return path.join(binaryDir, "chrome.exe");
+  }
   return path.join(binaryDir, "chrome");
 }
 
@@ -102,9 +107,8 @@ export function checkPlatformAvailable(): void {
   if (!AVAILABLE_PLATFORMS.has(tag)) {
     const available = [...AVAILABLE_PLATFORMS].sort().join(", ");
     throw new Error(
-      `CloakBrowser — Pre-built binaries are currently only available for: ${available}.\n` +
-        `Windows builds are coming soon.\n\n` +
-        `To use CloakBrowser now, run in Docker (see README) or set CLOAKBROWSER_BINARY_PATH.`
+      `CloakBrowser — Pre-built binaries are currently only available for: ${available}.\n\n` +
+        `To use CloakBrowser now, set CLOAKBROWSER_BINARY_PATH to a local Chromium binary.`
     );
   }
 }
@@ -198,10 +202,15 @@ export function getDefaultStealthArgs(): string[] {
 
   if (isMac) {
     // macOS: run as native Mac browser — GPU/UA match natively
-    return [...base, "--fingerprint-platform=macos"];
+    return [
+      ...base,
+      "--fingerprint-platform=macos",
+      "--fingerprint-gpu-vendor=Google Inc. (Apple)",
+      "--fingerprint-gpu-renderer=ANGLE (Apple, ANGLE Metal Renderer: Apple M3, Unspecified Version)",
+    ];
   }
 
-  // Linux: spoof as Windows
+  // Linux/Windows: Windows fingerprint profile
   return [
     ...base,
     "--fingerprint-platform=windows",

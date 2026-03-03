@@ -7,7 +7,7 @@ describe("binaryInfo", () => {
     const info = binaryInfo();
 
     expect(info.version).toBe(getChromiumVersion());
-    expect(info.platform).toMatch(/^(linux|darwin)-(x64|arm64)$/);
+    expect(info.platform).toMatch(/^(linux|darwin|windows)-(x64|arm64)$/);
     expect(info.binaryPath).toBeTruthy();
     expect(typeof info.installed).toBe("boolean");
     expect(info.cacheDir).toContain("cloakbrowser");
