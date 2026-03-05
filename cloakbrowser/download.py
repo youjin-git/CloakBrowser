@@ -44,7 +44,7 @@ from .config import (
 logger = logging.getLogger("cloakbrowser")
 
 # Timeout for download (large binary, allow 10 min)
-DOWNLOAD_TIMEOUT = 600.0
+DOWNLOAD_TIMEOUT = httpx.Timeout(connect=10.0, read=60.0, write=10.0, pool=10.0)
 
 # Auto-update check interval (1 hour)
 UPDATE_CHECK_INTERVAL = 3600
