@@ -584,6 +584,42 @@ docker stop cloak && docker rm cloak
 > The examples bind to `127.0.0.1` so only your machine can connect. Never expose port 9222
 > to the public internet without additional authentication.
 
+### Docker Compose
+
+```yaml
+services:
+  cloakbrowser:
+    image: cloakhq/cloakbrowser
+    command: cloakserve
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9222:9222"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9222/json/version"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+```
+
+Run multiple instances with different fingerprint seeds on different ports — each gets unique canvas noise, client rects, and other browser signals. Pass `--fingerprint=<seed>` in the command (e.g., `cloakserve --fingerprint=12345`).
+
+**Persistent profiles** — mount a volume to keep cookies and sessions across container restarts:
+
+```bash
+docker run --rm -v ./my-profile:/profile cloakhq/cloakbrowser python -c "
+from cloakbrowser import launch_persistent_context
+ctx = launch_persistent_context('/profile')
+page = ctx.new_page()
+page.goto('https://example.com')
+ctx.close()
+"
+```
+
+Run again with the same volume — cookies, localStorage, and cache are restored automatically.
+
+**Resource usage:** ~190MB RAM idle, ~280MB with 3 tabs. ~30MB per additional tab.
+
 ### Extend with your own image
 
 ```dockerfile
